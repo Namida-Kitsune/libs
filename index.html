@@ -56,11 +56,15 @@
     }
 
     function closed() {
+      liff.closeWindow()
     }
 
     async function scanCode() {
-      const result = await liff.scanCode()
-      document.getElementById("scanCode").append(result.value)
+     // const result = await liff.scanCode()
+     // document.getElementById("scanCode").append(result.value)
+     //*ประกาศ: เนื่องจากปัญหาทางเทคนิค LINE บน iOS ตั้งแต่ version 9.19.0 
+     //เป็นต้นไปจะไม่สามารถเรียกใช้ฟังก์ชั่นได้ ถ้ามีการเปลี่ยนแปลงผมจะรีบมาแจ้งให้ทราบทันทีครับ 
+     //(สำหรับ Android ยังใช้ได้อยู่เหมือนเดิมครับ)
     }
 
     function openWindow() {
