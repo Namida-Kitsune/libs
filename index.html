@@ -1,13 +1,10 @@
-<!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
-  <title>My LIFF app</title>
-  <link rel="stylesheet" href="css/style.css" media="all">
+  <title>My LIFF App</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
   <p id="os"><b>OS:</b> </p>
   <p id="language"><b>Language:</b> </p>
@@ -38,11 +35,11 @@
   <button id="btnLogOut" onclick="logOut()">Log Out</button>
   <button id="btnClose" onclick="closed()">Close</button>
 
-  <!-- <script src="js/vconsole.min.js"></script> -->
-  <!-- <script>
+  <script src="js/vconsole.min.js"></script>
+  <script>
     var vConsole = new VConsole()
     console.log("Hello World!")
-  </script> -->
+  </script>
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
@@ -58,8 +55,8 @@
     async function shareMsg() {
       await liff.shareTargetPicker([
         {
-          "type": "text",
-          "text": "This message was sent by ShareTargetPicker"
+          type: "text",
+          text: "This message was sent by ShareTargetPicker"
         }
       ])
     }
@@ -74,13 +71,10 @@
     }
 
     async function scanCode() {
-     // const result = await liff.scanCode()
-     // document.getElementById("scanCode").append(result.value)
-     //*ประกาศ: เนื่องจากปัญหาทางเทคนิค LINE บน iOS ตั้งแต่ version 9.19.0 
-     //เป็นต้นไปจะไม่สามารถเรียกใช้ฟังก์ชั่นได้ ถ้ามีการเปลี่ยนแปลงผมจะรีบมาแจ้งให้ทราบทันทีครับ 
-     //(สำหรับ Android ยังใช้ได้อยู่เหมือนเดิมครับ)
+      const result = await liff.scanCode()
+      document.getElementById("scanCode").append(result.value)
     }
-
+    
     function openWindow() {
       liff.openWindow({
         url: "https://line.me",
@@ -89,10 +83,17 @@
     }
 
     async function getFriendship() {
+      const friend = await liff.getFriendship()
+      document.getElementById("friendship").append(friend.friendFlag)
+      if (!friend.friendFlag) {
+        if (confirm("คุณยังไม่ได้เพิ่ม Bot เป็นเพื่อน จะเพิ่มเลยไหม?")) {
+          window.location = "https://line.me/R/ti/p/@YOUR-BOT-ID"
+        }
+      }
     }
 
     async function sendMsg() {
-      if (liff.getContext().type !== "none" && liff.getContext().type !== "external") {
+      if (liff.getContext().type !== "none") {
         await liff.sendMessages([
           {
             "type": "sticker",
@@ -105,11 +106,13 @@
     }
 
     function getContext() {
-      document.getElementById("type").append(liff.getContext().type)
-      document.getElementById("viewtype").append(liff.getContext().viewtype)
-      document.getElementById("utouId").append(liff.getContext().utouId)
-      document.getElementById("roomId").append(liff.getContext().roomId)
-      document.getElementById("groupId").append(liff.getContext().groupId)
+      if (liff.getContext() != null) {
+        document.getElementById("type").append(liff.getContext().type)
+        document.getElementById("viewType").append(liff.getContext().viewType)
+        document.getElementById("utouId").append(liff.getContext().utouId)
+        document.getElementById("roomId").append(liff.getContext().roomId)
+        document.getElementById("groupId").append(liff.getContext().groupId)
+      }
     }
 
     async function getUserProfile() {
@@ -120,7 +123,7 @@
       document.getElementById("displayName").append(profile.displayName)
       document.getElementById("decodedIDToken").append(liff.getDecodedIDToken().email)
     }
-
+    
     function getEnvironment() {
       document.getElementById("os").append(liff.getOS())
       document.getElementById("language").append(liff.getLanguage())
@@ -137,21 +140,21 @@
     }
 
     async function main() {
+      liff.ready.then(() => {
+        document.getElementById("isLoggedIn").append(liff.isLoggedIn())
+        if (liff.isLoggedIn()) {
+          getEnvironment()
+          getUserProfile()
+          getContext()
+          getFriendship()
+          createUniversalLink()
+        } else {
+          liff.login()
+        }
+      })
       await liff.init({ liffId: "1656429703-qGKbERGk" })
-      document.getElementById("isLoggedIn").append(liff.isLoggedIn())
-      if (liff.isLoggedIn()){
-        getEnvironment()
-        getUserProfile()
-        getContext()
-      } else {
-        liff.login()
-      }
-
-      // getFriendship()
-      // createUniversalLink()
     }
     main()
   </script>
 </body>
-
 </html>
